@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris Game</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-board">
+            <canvas id="tetris"></canvas>
+            <div id="gameOver" class="game-over">
+                <h2>Game Over!</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <button onclick="restartGame()">Play Again</button>
+            </div>
+        </div>
+        <div class="game-info">
+            <div class="score-container">
+                <div class="score-label">Score</div>
+                <div id="score" class="score">0</div>
+            </div>
+            <div class="controls">
+                <h2>Custom Controls</h2>
+                <div class="control-group">
+                    <label for="leftKey">Move Left</label>
+                    <input type="text" id="leftKey" value="ArrowLeft" readonly>
+                </div>
+                <div class="control-group">
+                    <label for="rightKey">Move Right</label>
+                    <input type="text" id="rightKey" value="ArrowRight" readonly>
+                </div>
+                <div class="control-group">
+                    <label for="downKey">Move Down</label>
+                    <input type="text" id="downKey" value="ArrowDown" readonly>
+                </div>
+                <div class="control-group">
+                    <label for="rotateKey">Rotate</label>
+                    <input type="text" id="rotateKey" value="ArrowUp" readonly>
+                </div>
+                <div class="control-group">
+                    <label for="hardDropKey">Hard Drop</label>
+                    <input type="text" id="hardDropKey" value="Space" readonly>
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="startBtn" onclick="startGame()">Start Game</button>
+                <button id="pauseBtn" onclick="togglePause()">Pause</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import Tetris from './tetris.js';
+
+        // Initialize game
+        const canvas = document.getElementById('tetris');
+        const game = new Tetris(canvas);
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const pauseBtn = document.getElementById('pauseBtn');
+        let isPaused = false;
+
+        // Set up score change callback
+        game.onScoreChange = (newScore) => {
+            scoreElement.textContent = newScore;
+            // Update final score if game is over
+            if (game.gameOver) {
+                finalScoreElement.textContent = newScore;
+            }
+        };
+
+        // Control key setup
+        const controlInputs = {
+            leftKey: document.getElementById('leftKey'),
+            rightKey: document.getElementById('rightKey'),
+            downKey: document.getElementById('downKey'),
+            rotateKey: document.getElementById('rotateKey'),
+            hardDropKey: document.getElementById('hardDropKey')
+        };
+
+        // Setup control customization
+        Object.entries(controlInputs).forEach(([key, input]) => {
+            input.addEventListener('focus', function() {
+                input.value = 'Press a key...';
+            });
+
+            input.addEventListener('keydown', function(e) {
+                e.preventDefault();
+                input.value = e.code;
+                const newControls = {};
+                newControls[key.replace('Key', '')] = e.code;
+                game.updateCustomControls(newControls);
+                input.blur();
+            });
+        });
+
+        // Game state management
+        window.startGame = function() {
+            gameOverElement.classList.remove('visible');
+            game.start();
+            requestAnimationFrame(gameLoop);
+        };
+
+        window.togglePause = function() {
+            isPaused = !isPaused;
+            game.togglePause();
+            pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+        };
+
+        window.restartGame = function() {
+            gameOverElement.classList.remove('visible');
+            game.start();
+        };
+
+        // Game loop
+        function gameLoop(time) {
+            if (game.gameOver) {
+                gameOverElement.classList.add('visible');
+                finalScoreElement.textContent = game.score;
+                return;
+            }
+
+            game.update(time);
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
