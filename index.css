@@ -1,0 +1,18 @@
+.game-container, .game-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.game-container {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.game-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
