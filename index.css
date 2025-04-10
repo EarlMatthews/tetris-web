@@ -1,18 +1,38 @@
-.game-container, .game-info {
+.game-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-}
-
-.game-container {
+    gap: 20px;
+    /* Adds spacing between items */
     width: 100%;
     min-height: 100vh;
 }
 
 .game-info {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+body {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(17, 17, 157, 1) 35%, rgba(13, 62, 180, 1) 86%, rgba(0, 212, 255, 1) 100%);
+    background-size: 400% 400%;
+    animation: gradient 10s ease infinite;
 }
